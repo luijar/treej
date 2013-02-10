@@ -1,4 +1,10 @@
 treej
 =====
 
-Decision Tree framework for Java
+Feed-forward Event Tree Framework for Java
+
+Under Construction
+
+
+  1. Traceability of events
+  
