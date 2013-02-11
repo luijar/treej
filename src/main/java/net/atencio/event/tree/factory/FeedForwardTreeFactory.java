@@ -1,5 +1,7 @@
 package main.java.net.atencio.event.tree.factory;
 
+import java.util.logging.Logger;
+
 import main.java.net.atencio.event.tree.FeedForwardEventTree;
 import main.java.net.atencio.event.tree.FeedForwardEventTreeImpl;
 import main.java.net.atencio.event.tree.RecursiveFeedForwardEventTree;
@@ -23,6 +25,8 @@ import main.java.net.atencio.event.tree.RecursiveFeedForwardEventTree;
  */
 public class FeedForwardTreeFactory {
 
+	private static final Logger LOGGER = Logger.getLogger(FeedForwardTreeFactory.class.getName());
+	
 	public enum Type {		
 		RECURSIVE,		
 		NON_RECURSIVE
@@ -40,7 +44,8 @@ public class FeedForwardTreeFactory {
 				default: 
 					instance = new FeedForwardEventTreeImpl();
 			}	
-		}	
+			LOGGER.info("Initializing new Feed-Forward Event Tree");
+		}
 		return instance;
 	}
 }

@@ -1,6 +1,7 @@
 package main.java.net.atencio.event.tree.model;
 
-import java.io.Serializable;
+import java.util.List;
+
 
 /**
  * Abstract Node class
@@ -8,20 +9,13 @@ import java.io.Serializable;
  * @author luijar
  *
  */
-public abstract class Node implements Serializable {
+public interface Node {
 
+	String getId();
 	
-	private Node parent;
+	Node getPrevious();
 	
-	public Node getParent() {
-		return parent;
-	}
+	List<Node> getNext();
 	
-	public void setParent(Node parent) {
-		this.parent = parent;
-	}
-	
-	
-	
-	private static final long serialVersionUID = 1L;
+	boolean isRoot();
 }

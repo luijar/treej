@@ -1,5 +1,7 @@
 package main.java.net.atencio.event.tree;
 
+import main.java.net.atencio.event.tree.model.Node;
+
 /**
  * Main Event Tree interface
  * 
@@ -7,6 +9,6 @@ package main.java.net.atencio.event.tree;
  */
 public interface FeedForwardEventTree {
 
-	
+	void addNode(Node n);
 	
 }
