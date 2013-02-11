@@ -11,4 +11,17 @@ import java.io.Serializable;
 public abstract class Node implements Serializable {
 
 	
+	private Node parent;
+	
+	public Node getParent() {
+		return parent;
+	}
+	
+	public void setParent(Node parent) {
+		this.parent = parent;
+	}
+	
+	
+	
+	private static final long serialVersionUID = 1L;
 }
