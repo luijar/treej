@@ -1,10 +1,10 @@
-package main.java.net.atencio.event.tree.factory;
+package net.atencio.event.tree.factory;
 
 import java.util.logging.Logger;
 
-import main.java.net.atencio.event.tree.FeedForwardEventTree;
-import main.java.net.atencio.event.tree.FeedForwardEventTreeImpl;
-import main.java.net.atencio.event.tree.RecursiveFeedForwardEventTree;
+import net.atencio.event.tree.FeedForwardEventTree;
+import net.atencio.event.tree.FeedForwardEventTreeImpl;
+import net.atencio.event.tree.RecursiveFeedForwardEventTree;
 
 /**
  * Feed forward Event tree implementation. Event trees can be recursive or non-recursive. 
