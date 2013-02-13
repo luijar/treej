@@ -2,30 +2,27 @@ package net.atencio;
 
 import java.awt.Color;
 
-import net.atencio.event.tree.FeedForwardEventTree;
-import net.atencio.event.tree.FeedForwardEventTreeImpl;
-import net.atencio.event.tree.model.Node;
+import net.atencio.util.event.tree.FeedForwardEventTree;
+import net.atencio.util.event.tree.FeedForwardEventTreeImpl;
+import net.atencio.util.event.tree.model.NodeImpl;
+import net.atencio.util.event.tree.model.RootNode;
 
 import org.junit.Before;
 import org.junit.Test;
 
 public class BasicEventTreeOperationsTest {
 
-	FeedForwardEventTree basicTree;
+	FeedForwardEventTree<Color> basicTree;
 	
 	@Before
 	public void setUp() {
-		this.basicTree = new FeedForwardEventTreeImpl();
+		this.basicTree = new FeedForwardEventTreeImpl<Color>();
 	}
 	
 	@Test
 	public void testAddNode() {
 		
-		Node<Color> n = new Node.Builder<Color>()
-		.id("123")
-		.value(Color.BLUE)
-		.build();
-		
-		basicTree.createRootNode(null).addNode(null, "").
+		this.basicTree.setRoot(new RootNode<Color>(Color.BLUE));
+		this.basicTree.add(new NodeImpl<Color>("1", Color.BLACK));
 	}
 }
