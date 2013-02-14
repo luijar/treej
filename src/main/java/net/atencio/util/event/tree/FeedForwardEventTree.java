@@ -24,17 +24,23 @@ public interface FeedForwardEventTree<T> extends Collection<Node<T>> {
 	 * Add a node to the tree. This node will be notified from changes happening to other nodes
 	 * 
 	 * @param node The new node to add
-	 * @param targetNodeIds  The node ids this node depends on
+	 * @param sourceNodeIds  The node ids this node depends on. Use "root" to specify a dependency on the root node
 	 * @return
 	 */
-	boolean addToPath(Node<T> node, String... targetNodeIds);
+	boolean addToPath(Node<T> node, String... sourceNodeIds) throws NodeNotFoundException;
 	
 	/**
-	 * Add a new event path. 
+	 * Add a new event path. Use "root" to reference the root node
 	 * 
-	 * @param id  Source Node id
-	 * @param ids Target node id
+	 * @param sourceNodeIds Source Node ids. Sources 
+	 * @param targetNodeId  Target node id
+	 */
+	void addPath(String targetNodeId, String... sourceNodeIds) throws NodeNotFoundException;	
+	
+	/**
+	 * Depth of tree
+	 * 
 	 * @return
 	 */
-	boolean addPath(String sourceNodeId, String... targetNodeIds);	
+	int getDepth();
 }
