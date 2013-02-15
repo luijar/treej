@@ -1,7 +1,8 @@
-package net.atencio.util.event.tree.model;
+package net.atencio.util.event.tree;
 
-import java.util.Collections;
 import java.util.HashSet;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Set;
 
 /**
@@ -11,16 +12,17 @@ import java.util.Set;
  *
  * @param <T> Type of value to carry within this node
  */
-public class NodeImpl<T> implements Node<T> {
+public class Node<T> extends Observable implements Validateable, Comparable<String> {
 
 	private final String id;
 	private final T value;
-	private Set<NodeImpl<T>> next;
+	private Set<Node<T>> nextNodes;
+	
+	public Node(String id, T value) {
 		
-	public NodeImpl(String id, T value) {
 		this.id = id;
 		this.value = value;
-		this.next = new HashSet<NodeImpl<T>>();
+		this.nextNodes = new HashSet<Node<T>>();
 	}
 
 	public String getId() {
@@ -35,25 +37,37 @@ public class NodeImpl<T> implements Node<T> {
 		return value;
 	}
 	
+	public int getDepth() {
+		
+		return this.nextNodes.size();
+	}
+	
 	@Override
 	public boolean isValid() {
 		return this.id != null && !this.id.isEmpty();
 	}
 	
-	public boolean addNext(NodeImpl<T> next) {
-		
-		return this.next.add(next);
-	}
-	
-	public Set<NodeImpl<T>> getNext() {
-		return Collections.unmodifiableSet(this.next);
-	}
-
 	@Override
 	public int compareTo(String oId) {
 		return this.id.compareTo(oId);
 	}
-
+	
+	public boolean addNext(Node<T> next) {
+		
+		return this.nextNodes.add(next);
+	}
+	
+	Set<Node<T>> getNextNodes() {
+		
+		return this.nextNodes; 
+	}
+	
+	public static <T> Node<T> build(String id, T value, Observer observer) {
+		Node<T> n = new Node<T>(id, value);
+		n.addObserver(observer);
+		return n;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -71,7 +85,7 @@ public class NodeImpl<T> implements Node<T> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		NodeImpl<T> other = (NodeImpl<T>) obj;
+		Node<T> other = (Node<T>) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

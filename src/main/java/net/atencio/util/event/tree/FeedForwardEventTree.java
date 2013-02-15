@@ -2,9 +2,6 @@ package net.atencio.util.event.tree;
 
 import java.util.Collection;
 
-import net.atencio.util.event.tree.model.Node;
-import net.atencio.util.event.tree.model.RootNode;
-
 /**
  * Main Event Tree interface
  * 
@@ -13,7 +10,7 @@ import net.atencio.util.event.tree.model.RootNode;
 public interface FeedForwardEventTree<T> extends Collection<Node<T>> {
 
 	/**
-	 * Set root of tree. The root node will automatically get mapped with the root Id
+	 * Set root of tree. The root node will automatically get mapped with an ID of "root"
 	 * 
 	 * @param root RootNode object with the first value in the tree
 	 * @return
@@ -38,9 +35,27 @@ public interface FeedForwardEventTree<T> extends Collection<Node<T>> {
 	void addPath(String targetNodeId, String... sourceNodeIds) throws NodeNotFoundException;	
 	
 	/**
-	 * Depth of tree
+	 * Depth of tree from the root. Note: this is different from the size of the tree which counts 
+	 * how many nodes are in it.
 	 * 
 	 * @return
 	 */
-	int getDepth();
+	int depth();
+	
+	/**
+	 * Generate an event on a specific node and propagate
+	 * 
+	 * @see int generateEventOn(String nodeId, T change, boolean propagate) throws NodeNotFoundException
+	 */
+	int generateEventOn(String nodeId, T change) throws NodeNotFoundException;
+	
+	/**
+	 * Generate an event on a specific node
+	 * 
+	 * @param nodeId   The source node id
+	 * @param change   The changed value to communicate
+	 * @return The count of nodes that were notified
+	 * @throws NodeNotFoundException 
+	 */
+	int generateEventOn(String nodeId, T change, boolean propagate) throws NodeNotFoundException;
 }
