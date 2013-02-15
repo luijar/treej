@@ -48,15 +48,15 @@ public interface FeedForwardEventTree<T> extends Collection<Node<T>> {
 	 * 
 	 * @see int generateEventOn(String nodeId, T change, boolean propagate) throws NodeNotFoundException
 	 */
-	int generateEventOn(String nodeId, T change) throws NodeNotFoundException;
+	int generateEventOn(String nodeId, Object context) throws NodeNotFoundException;
 	
 	/**
 	 * Generate an event on a specific node
 	 * 
 	 * @param nodeId   The source node id
-	 * @param change   The changed value to communicate
+	 * @param context  Used to pass any context object that could be useful within the observers
 	 * @return The count of nodes that were notified
 	 * @throws NodeNotFoundException 
 	 */
-	int generateEventOn(String nodeId, T change, boolean propagate) throws NodeNotFoundException;
+	int generateEventOn(String nodeId, Object context, boolean propagate) throws NodeNotFoundException;
 }

@@ -206,25 +206,25 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 	}
 	
 	@Override
-	public int generateEventOn(String nodeId, T change) throws NodeNotFoundException {
+	public int generateEventOn(String nodeId, Object context) throws NodeNotFoundException {
 		
-		return generateEventOn(nodeId, change, true);
+		return generateEventOn(nodeId, context, true);
 	};
 	
 	@Override
-	public int generateEventOn(String nodeId, T change, boolean propagate) throws NodeNotFoundException {
+	public int generateEventOn(String nodeId, Object context, boolean propagate) throws NodeNotFoundException {
 		
 		Node<T> source = this.fetchNode(nodeId);		
 		if(propagate) {			
-			return notifyAllObservers(source, change);
+			return notifyAllObservers(source, context);
 		}
 		else {
-			source.notifyObservers(change);
+			source.notifyObservers(context);
 			return 1;
 		}		
 	};
 	
-	private int notifyAllObservers(Node<T> n, final T obj) {
+	private int notifyAllObservers(Node<T> n, final Object obj) {
 				
 		n.notifyObservers(obj);
 		if(n.getDepth() == 0) {			
