@@ -7,7 +7,7 @@ package net.atencio.util.event.tree;
  *
  * @param <T>
  */
-public class RootNode<T> extends Node<T> {
+public class RootNode<T> extends EventNode<T> {
 
 	public RootNode(T value) {
 		super("root", value);

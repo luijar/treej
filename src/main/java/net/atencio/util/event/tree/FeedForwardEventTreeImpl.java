@@ -8,19 +8,19 @@ import java.util.logging.Logger;
 
 public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 
-	private Node<T> root;
-	private Map<String, Node<T>> nodeIdMap;
+	private EventNode<T> root;
+	private Map<String, EventNode<T>> nodeIdMap;
 	
 	private static final Logger LOGGER = Logger.getLogger(FeedForwardEventTreeImpl.class.getName());
 	
 	public FeedForwardEventTreeImpl(int initCapacity) {
 		
-		this.nodeIdMap = new HashMap<String, Node<T>>(initCapacity);
+		this.nodeIdMap = new HashMap<String, EventNode<T>>(initCapacity);
 	}
 	
 	public FeedForwardEventTreeImpl() {
 		
-		this.nodeIdMap = new HashMap<String, Node<T>>();
+		this.nodeIdMap = new HashMap<String, EventNode<T>>();
 	}
 	
 	@Override
@@ -35,12 +35,12 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 	
 	
 	@Override
-	public boolean addToPath(Node<T> node, String... sourceNodeIds) throws NodeNotFoundException { 
+	public boolean addToPath(EventNode<T> node, String... sourceNodeIds) throws NodeNotFoundException { 
 		
 		// Add node and paths
 		if(sourceNodeIds != null) {
 			for(String sourceId: sourceNodeIds) {
-				Node<T> source = this.nodeIdMap.get(sourceId);
+				EventNode<T> source = this.nodeIdMap.get(sourceId);
 				
 				if(source == null) {
 					throw new NodeNotFoundException(sourceId);
@@ -59,13 +59,13 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 	@Override
 	public void addPath(String targetNodeId, String... sourceNodeIds) throws NodeNotFoundException {
 		
-		Node<T> node = (Node<T>)this.nodeIdMap.get(targetNodeId);
+		EventNode<T> node = (EventNode<T>)this.nodeIdMap.get(targetNodeId);
 		
 		if(node != null) {
 			
 			if(sourceNodeIds != null) {
 				for(String sourceId: sourceNodeIds) {
-					Node<T> source = (Node<T>)this.nodeIdMap.get(sourceId);
+					EventNode<T> source = (EventNode<T>)this.nodeIdMap.get(sourceId);
 					
 					if(source == null) {
 						throw new NodeNotFoundException(sourceId);
@@ -88,10 +88,10 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean contains(Object o) {
-		if(!(o instanceof Node)) {
+		if(!(o instanceof EventNode)) {
 			throw new ClassCastException("Object must be a class of Node");
 		}
-		Node<T> node = (Node<T>)o;
+		EventNode<T> node = (EventNode<T>)o;
 		return this.nodeIdMap.containsKey(node.getId());
 	}
 
@@ -132,7 +132,7 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 	}
 
 	@Override
-	public boolean add(Node<T> e) {
+	public boolean add(EventNode<T> e) {
 		
 		if(e == null || !e.isValid()) {
 			throw new IllegalArgumentException("Valid node expected. Got " + e);
@@ -146,7 +146,7 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 	}
 
 	@Override
-	public boolean addAll(Collection<? extends Node<T>> c) {
+	public boolean addAll(Collection<? extends EventNode<T>> c) {
 		
 		
 		
@@ -154,7 +154,7 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 	}
 
 	@Override
-	public Iterator<Node<T>> iterator() {
+	public Iterator<EventNode<T>> iterator() {
 		
 		return this.nodeIdMap.values().iterator();
 	}
@@ -183,14 +183,14 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 	 * @param n
 	 * @return
 	 */
-	private int getDepth(Node<T> n) {
+	private int getDepth(EventNode<T> n) {
 		
 		if(n.getDepth() == 0) {
 			return 1;
 		}
 		
 		int max = 0;
-		for(Node<T> next: n.getNextNodes()) {
+		for(EventNode<T> next: n.getNextNodes()) {
 			int localDepth = 1 + getDepth(next);
 			if(localDepth > max) {
 				max = localDepth;
@@ -212,9 +212,42 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 	};
 	
 	@Override
+	public int generateEventOn(EventNode<T> node, Object context)
+			throws NodeNotFoundException {
+	
+		return this.generateEventOn(node.getId(), context);
+	}
+	
+	@Override
+	public int generateEventOn(EventNode<T> node, Object context,
+			boolean propagate) throws NodeNotFoundException {
+		
+		return this.generateEventOn(node.getId(), context, propagate);
+	}
+	
+	@Override
+	public Trace generateTracedEventOn(EventNode<T> node, Object context)
+			throws NodeNotFoundException {
+		
+		// TODO
+		
+		return null;
+	}
+	
+	@Override
+	public Trace generateTracedEventOn(String nodeId, Object context)
+			throws NodeNotFoundException {
+		
+		
+		// TODO
+		
+		return null;
+	}
+	
+	@Override
 	public int generateEventOn(String nodeId, Object context, boolean propagate) throws NodeNotFoundException {
 		
-		Node<T> source = this.fetchNode(nodeId);		
+		EventNode<T> source = this.fetchNode(nodeId);		
 		if(propagate) {			
 			return notifyAllObservers(source, context);
 		}
@@ -224,30 +257,30 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 		}		
 	};
 	
-	private int notifyAllObservers(Node<T> n, final Object obj) {
+	private int notifyAllObservers(EventNode<T> n, final Object obj) {
 				
 		n.notifyObservers(obj);
 		if(n.getDepth() == 0) {			
 			return 1;
 		}		
 		int notified = 1;
-		for(Node<T> next: n.getNextNodes()) {
+		for(EventNode<T> next: n.getNextNodes()) {
 			notified += notifyAllObservers(next, obj);
 		}
 		return notified;
 	}
 	
 	
-	private Node<T> fetchNode(String id) throws NodeNotFoundException {
+	private EventNode<T> fetchNode(String id) throws NodeNotFoundException {
 		
-		Node<T> n = this.nodeIdMap.get(id);		
+		EventNode<T> n = this.nodeIdMap.get(id);		
 		if(n == null) {
 			throw new NodeNotFoundException(id);
 		}
 		return n;
 	}
 
-	Map<String, Node<T>> getNodeIdMap() {
+	Map<String, EventNode<T>> getNodeIdMap() {
 		return nodeIdMap;
 	}	
 }

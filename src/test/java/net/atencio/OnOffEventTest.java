@@ -7,7 +7,7 @@ import java.util.Observer;
 
 import net.atencio.util.event.tree.FeedForwardEventTree;
 import net.atencio.util.event.tree.FeedForwardEventTreeImpl;
-import net.atencio.util.event.tree.Node;
+import net.atencio.util.event.tree.EventNode;
 import net.atencio.util.event.tree.NodeNotFoundException;
 import net.atencio.util.event.tree.RootNode;
 
@@ -39,16 +39,16 @@ public class OnOffEventTest {
 	public void onOffTest() throws NodeNotFoundException {
 
 		// Tree starts all off
-		Node<Boolean> one = new Node<Boolean>("1", Boolean.FALSE);
-		Node<Boolean> two = new Node<Boolean>("2", Boolean.FALSE);
-		Node<Boolean> three = new Node<Boolean>("3", Boolean.FALSE);
+		EventNode<Boolean> one = new EventNode<Boolean>("1", Boolean.FALSE);
+		EventNode<Boolean> two = new EventNode<Boolean>("2", Boolean.FALSE);
+		EventNode<Boolean> three = new EventNode<Boolean>("3", Boolean.FALSE);
 		
-		List<Node<Boolean>> nodes = new ArrayList<Node<Boolean>>();
+		List<EventNode<Boolean>> nodes = new ArrayList<EventNode<Boolean>>();
 		nodes.add(one);
 		nodes.add(two);
 		nodes.add(three);
 		
-		for(Node<Boolean> n: nodes) {
+		for(EventNode<Boolean> n: nodes) {
 			n.addObserver(new RootTurnOnNextNodeObserver(this.root));
 		}
 				
@@ -69,7 +69,7 @@ public class OnOffEventTest {
 		Assert.assertEquals(notified, 5);
 		
 		Assert.assertTrue(this.root.getValue());
-		for(Node<Boolean> n: nodes) {
+		for(EventNode<Boolean> n: nodes) {
 			Assert.assertTrue(n.getValue());
 		}
 	}
@@ -82,16 +82,16 @@ public class OnOffEventTest {
 	 */
 	private class RootTurnOnNextNodeObserver implements Observer {
 		
-		private Node<Boolean> root;
+		private EventNode<Boolean> root;
 		
-		public RootTurnOnNextNodeObserver(Node<Boolean> root) {
+		public RootTurnOnNextNodeObserver(EventNode<Boolean> root) {
 			this.root = root;
 		}
 		
 		@SuppressWarnings("unchecked")
 		@Override
 		public void update(Observable o, Object arg) {			
-			Node<Boolean> thisNode = (Node<Boolean>)o;
+			EventNode<Boolean> thisNode = (EventNode<Boolean>)o;
 			thisNode.updateValue(root.getValue());			
 		}		
 	}

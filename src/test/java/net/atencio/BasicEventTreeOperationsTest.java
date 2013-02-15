@@ -1,13 +1,13 @@
 package net.atencio;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.Observable;
 import java.util.Observer;
 
-import net.atencio.util.ChangeableBoolean;
 import net.atencio.util.event.tree.FeedForwardEventTree;
 import net.atencio.util.event.tree.FeedForwardEventTreeImpl;
-import net.atencio.util.event.tree.Node;
+import net.atencio.util.event.tree.EventNode;
 import net.atencio.util.event.tree.NodeNotFoundException;
 import net.atencio.util.event.tree.RootNode;
 
@@ -39,9 +39,9 @@ public class BasicEventTreeOperationsTest {
 	@Test
 	public void testAddNode() throws NodeNotFoundException {
 		
-		Node<Color> one = new Node<Color>("1", Color.BLACK);
-		Node<Color> two = new Node<Color>("2", Color.RED);
-		Node<Color> three = new Node<Color>("3", Color.CYAN);
+		EventNode<Color> one = new EventNode<Color>("1", Color.BLACK);
+		EventNode<Color> two = new EventNode<Color>("2", Color.RED);
+		EventNode<Color> three = new EventNode<Color>("3", Color.CYAN);
 		
 		// Add three nodes
 		this.basicTree.add(one);
@@ -73,9 +73,9 @@ public class BasicEventTreeOperationsTest {
 	@Test
 	public void testGenerateEventOn() throws NodeNotFoundException {
 		
-		Node<Color> one = new Node<Color>("1", Color.BLACK);
-		Node<Color> two = new Node<Color>("2", Color.RED);
-		Node<Color> three = new Node<Color>("3", Color.CYAN);
+		EventNode<Color> one = new EventNode<Color>("1", Color.BLACK);
+		EventNode<Color> two = new EventNode<Color>("2", Color.RED);
+		EventNode<Color> three = new EventNode<Color>("3", Color.CYAN);
 		
 		// Add three nodes
 		this.basicTree.add(one);
@@ -101,5 +101,38 @@ public class BasicEventTreeOperationsTest {
 		Assert.assertEquals(notified, 4);
 		
 		Assert.assertTrue(isNotified.get());
+	}
+	
+	private static class ChangeableBoolean implements Serializable {
+
+		private static final long serialVersionUID = 1L;
+		private boolean val;
+		
+		public ChangeableBoolean() { 		
+			this.val = false;
+		}
+		
+		public ChangeableBoolean(boolean initialVal) {
+			this.val = initialVal;
+		}
+		
+		public synchronized boolean checkAndSet(boolean newVal) {
+			boolean prev = val;
+			val = newVal;
+			return prev;
+		}
+		
+		public synchronized boolean get() {
+			return val;
+		}
+		
+		public synchronized void set(boolean newVal) {
+			val = newVal;
+		}
+
+		@Override
+		public String toString() {
+			return "ChangeableBoolean [val=" + val + "]";
+		}	
 	}
 }

@@ -12,17 +12,17 @@ import java.util.Set;
  *
  * @param <T> Type of value to carry within this node
  */
-public class Node<T> extends Observable implements Validateable, Comparable<String> {
+public class EventNode<T> extends Observable implements Validateable, Comparable<String> {
 
 	private final String id;
 	private T value;
-	private Set<Node<T>> nextNodes;
+	private Set<EventNode<T>> nextNodes;
 	
-	public Node(String id, T value) {
+	public EventNode(String id, T value) {
 		
 		this.id = id;
 		this.value = value;
-		this.nextNodes = new HashSet<Node<T>>();
+		this.nextNodes = new HashSet<EventNode<T>>();
 	}
 
 	public String getId() {
@@ -48,7 +48,7 @@ public class Node<T> extends Observable implements Validateable, Comparable<Stri
 	 * @param value
 	 * @return
 	 */
-	public Node<T> updateValue(T value) {
+	public EventNode<T> updateValue(T value) {
 		
 		this.value = value;
 		propagateMarkAsChanged(this);
@@ -61,11 +61,11 @@ public class Node<T> extends Observable implements Validateable, Comparable<Stri
 	}
 	
 	// Mark this node as changed and all next nodes
-	private void propagateMarkAsChanged(Node<T> n) {
+	private void propagateMarkAsChanged(EventNode<T> n) {
 		
 		n.markAsChanged();
 		if(n.getDepth() != 0) {
-			for(Node<T> nx: n.nextNodes) {
+			for(EventNode<T> nx: n.nextNodes) {
 				propagateMarkAsChanged(nx);	
 			}			
 		}		
@@ -81,18 +81,18 @@ public class Node<T> extends Observable implements Validateable, Comparable<Stri
 		return this.id.compareTo(oId);
 	}
 	
-	public boolean addNext(Node<T> next) {
+	public boolean addNext(EventNode<T> next) {
 		
 		return this.nextNodes.add(next);
 	}
 	
-	Set<Node<T>> getNextNodes() {
+	Set<EventNode<T>> getNextNodes() {
 		
 		return this.nextNodes; 
 	}
 	
-	public static <T> Node<T> build(String id, T value, Observer observer) {
-		Node<T> n = new Node<T>(id, value);
+	public static <T> EventNode<T> build(String id, T value, Observer observer) {
+		EventNode<T> n = new EventNode<T>(id, value);
 		n.addObserver(observer);
 		return n;
 	}
@@ -114,7 +114,7 @@ public class Node<T> extends Observable implements Validateable, Comparable<Stri
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Node<T> other = (Node<T>) obj;
+		EventNode<T> other = (EventNode<T>) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

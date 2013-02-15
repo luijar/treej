@@ -8,7 +8,7 @@ import java.util.Collection;
  * 
  * @author luijar
  */
-public interface FeedForwardEventTree<T> extends Collection<Node<T>> {
+public interface FeedForwardEventTree<T> extends Collection<EventNode<T>> {
 
 	/**
 	 * Set root of tree. The root node will automatically get mapped with an ID of "root"
@@ -25,7 +25,7 @@ public interface FeedForwardEventTree<T> extends Collection<Node<T>> {
 	 * @param sourceNodeIds  The node ids this node depends on. Use "root" to specify a dependency on the root node
 	 * @return
 	 */
-	boolean addToPath(Node<T> node, String... sourceNodeIds) throws NodeNotFoundException;
+	boolean addToPath(EventNode<T> node, String... sourceNodeIds) throws NodeNotFoundException;
 	
 	/**
 	 * Add a new event path. Use "root" to reference the root node
@@ -59,4 +59,33 @@ public interface FeedForwardEventTree<T> extends Collection<Node<T>> {
 	 * @throws NodeNotFoundException 
 	 */
 	int generateEventOn(String nodeId, Object context, boolean propagate) throws NodeNotFoundException;
+	
+	/**
+	 * @see int generateEventOn(String nodeId, T change) throws NodeNotFoundException
+	 */
+	int generateEventOn(EventNode<T> node, Object context) throws NodeNotFoundException;
+	
+	
+	/**
+	 *  @see int generateEventOn(String nodeId, T change, boolean propagate) throws NodeNotFoundException
+	 */
+	int generateEventOn(EventNode<T> node, Object context, boolean propagate) throws NodeNotFoundException;
+	
+	
+	/**
+	 * Generate an event on a specific node, propagate and acquire a trace of the events.
+	 * 
+	 * @param nodeId   The source node id
+	 * @param context  Used to pass any context object that could be useful within the observers
+	 * @return A trace of all the steps from the specified node
+	 * @throws NodeNotFoundException 
+	 */
+	Trace generateTracedEventOn(String nodeId, Object context) throws NodeNotFoundException;
+	
+	/**
+	 * @see Trace generateTracedEventOn(String nodeId, Object context) throws NodeNotFoundException;
+	 */
+	Trace generateTracedEventOn(EventNode<T> node, Object context)	throws NodeNotFoundException;
+	
+	
 }
