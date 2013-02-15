@@ -214,7 +214,7 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 	@Override
 	public int generateEventOn(String nodeId, T change, boolean propagate) throws NodeNotFoundException {
 		
-		Node<T> source = this.fetchNode(nodeId);				
+		Node<T> source = this.fetchNode(nodeId);		
 		if(propagate) {			
 			return notifyAllObservers(source, change);
 		}
@@ -230,9 +230,9 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 		if(n.getDepth() == 0) {			
 			return 1;
 		}		
-		int notified = 0;
+		int notified = 1;
 		for(Node<T> next: n.getNextNodes()) {
-			notified = 1 + notifyAllObservers(next, obj);
+			notified += notifyAllObservers(next, obj);
 		}
 		return notified;
 	}

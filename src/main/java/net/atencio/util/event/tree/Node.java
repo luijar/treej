@@ -42,16 +42,33 @@ public class Node<T> extends Observable implements Validateable, Comparable<Stri
 		return this.nextNodes.size();
 	}
 	
-	public Node<T> setValue(T value) {
+	/**
+	 * This call to update, will make all path nodes underneath it ready to be notified.
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public Node<T> updateValue(T value) {
 		
 		this.value = value;
-		setChanged();
+		propagateMarkAsChanged(this);
 		return this;
 	}
 	
 	public void markAsChanged() {
 		
-		setChanged();
+		this.setChanged();
+	}
+	
+	// Mark this node as changed and all next nodes
+	private void propagateMarkAsChanged(Node<T> n) {
+		
+		n.markAsChanged();
+		if(n.getDepth() != 0) {
+			for(Node<T> nx: n.nextNodes) {
+				propagateMarkAsChanged(nx);	
+			}			
+		}		
 	}
 	
 	@Override

@@ -50,7 +50,7 @@ public class BasicEventTreeOperationsTest {
 		
 		Assert.assertFalse(this.basicTree.isEmpty());
 		Assert.assertEquals(this.basicTree.depth(), 1);
-		
+				
 		this.basicTree.addPath("1", "root");
 		Assert.assertEquals(this.basicTree.depth(), 2);
 		
