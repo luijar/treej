@@ -15,7 +15,7 @@ import java.util.Set;
 public class Node<T> extends Observable implements Validateable, Comparable<String> {
 
 	private final String id;
-	private final T value;
+	private T value;
 	private Set<Node<T>> nextNodes;
 	
 	public Node(String id, T value) {
@@ -40,6 +40,18 @@ public class Node<T> extends Observable implements Validateable, Comparable<Stri
 	public int getDepth() {
 		
 		return this.nextNodes.size();
+	}
+	
+	public Node<T> setValue(T value) {
+		
+		this.value = value;
+		setChanged();
+		return this;
+	}
+	
+	public void markAsChanged() {
+		
+		setChanged();
 	}
 	
 	@Override

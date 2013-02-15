@@ -225,9 +225,9 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 	};
 	
 	private int notifyAllObservers(Node<T> n, final T obj) {
-		
-		if(n.getDepth() == 0) {
-			n.notifyObservers(obj);
+				
+		n.notifyObservers(obj);
+		if(n.getDepth() == 0) {			
 			return 1;
 		}		
 		int notified = 0;
@@ -246,4 +246,8 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 		}
 		return n;
 	}
+
+	Map<String, Node<T>> getNodeIdMap() {
+		return nodeIdMap;
+	}	
 }
