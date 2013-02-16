@@ -103,8 +103,9 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 
 	@Override
 	public boolean remove(Object o) {
-		// TODO Auto-generated method stub
-		return false;
+		
+		Identifiable idnt = (Identifiable)o;
+		return this.nodeIdMap.remove(idnt.getId()) != null;
 	}
 
 	@Override
@@ -148,9 +149,11 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 	@Override
 	public boolean addAll(Collection<? extends EventNode<T>> c) {
 		
-		
-		
-		return false;
+		int currentSize = this.size();
+		for(EventNode<T> n: c) {
+			this.nodeIdMap.put(n.getId(), n);
+		}		
+		return this.nodeIdMap.size() == (c.size() + currentSize);
 	}
 
 	@Override

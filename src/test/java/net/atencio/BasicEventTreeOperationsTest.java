@@ -2,12 +2,14 @@ package net.atencio;
 
 import java.awt.Color;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import net.atencio.util.event.tree.EventNode;
 import net.atencio.util.event.tree.FeedForwardEventTree;
 import net.atencio.util.event.tree.FeedForwardEventTreeImpl;
-import net.atencio.util.event.tree.EventNode;
 import net.atencio.util.event.tree.NodeNotFoundException;
 import net.atencio.util.event.tree.RootNode;
 
@@ -101,6 +103,20 @@ public class BasicEventTreeOperationsTest {
 		Assert.assertEquals(notified, 4);
 		
 		Assert.assertTrue(isNotified.get());
+	}
+	
+	@Test
+	public void testAddAll() {
+		
+		EventNode<Color> one = new EventNode<Color>("1", Color.BLACK);
+		EventNode<Color> two = new EventNode<Color>("2", Color.RED);
+		EventNode<Color> three = new EventNode<Color>("3", Color.CYAN);
+		
+		List<EventNode<Color>> items = new ArrayList<EventNode<Color>>();
+		items.add(one); items.add(two); items.add(three);
+		
+		this.basicTree.addAll(items);
+		Assert.assertEquals(this.basicTree.size(), 3 + 1);
 	}
 	
 	private static class ChangeableBoolean implements Serializable {

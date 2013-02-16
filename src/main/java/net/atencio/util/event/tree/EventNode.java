@@ -12,7 +12,7 @@ import java.util.Set;
  *
  * @param <T> Type of value to carry within this node
  */
-public class EventNode<T> extends Observable implements Validateable, Comparable<String> {
+public class EventNode<T> extends Observable implements Validateable, Identifiable, Comparable<String> {
 
 	private final String id;
 	private T value;
@@ -25,6 +25,7 @@ public class EventNode<T> extends Observable implements Validateable, Comparable
 		this.nextNodes = new HashSet<EventNode<T>>();
 	}
 
+	@Override
 	public String getId() {
 		return this.id;
 	}
@@ -60,15 +61,17 @@ public class EventNode<T> extends Observable implements Validateable, Comparable
 		this.setChanged();
 	}
 	
-	// Mark this node as changed and all next nodes
+	// Mark this node as changed (if it hadn't) and all next nodes
 	private void propagateMarkAsChanged(EventNode<T> n) {
 		
-		n.markAsChanged();
-		if(n.getDepth() != 0) {
-			for(EventNode<T> nx: n.nextNodes) {
-				propagateMarkAsChanged(nx);	
-			}			
-		}		
+		if(!n.hasChanged()) {
+			n.markAsChanged();
+			if(n.getDepth() != 0) {
+				for(EventNode<T> nx: n.nextNodes) {
+					propagateMarkAsChanged(nx);	
+				}			
+			}	
+		}
 	}
 	
 	@Override

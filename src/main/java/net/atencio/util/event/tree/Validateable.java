@@ -1,4 +1,4 @@
-package net.atencio.util.event.tree.model;
+package net.atencio.util.event.tree;
 
 public interface Validateable {
 
