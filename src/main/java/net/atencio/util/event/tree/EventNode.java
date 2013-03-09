@@ -27,14 +27,17 @@ public class EventNode<T> extends Observable implements Validateable, Identifiab
 
 	@Override
 	public String getId() {
+		
 		return this.id;
 	}
 
 	public boolean isRoot() {
+		
 		return this.id.equals("root");
 	}
 	
 	public T getValue() {
+		
 		return value;
 	}
 	
@@ -76,11 +79,13 @@ public class EventNode<T> extends Observable implements Validateable, Identifiab
 	
 	@Override
 	public boolean isValid() {
+		
 		return this.id != null && !this.id.isEmpty();
 	}
 	
 	@Override
 	public int compareTo(String oId) {
+		
 		return this.id.compareTo(oId);
 	}
 	
@@ -95,6 +100,7 @@ public class EventNode<T> extends Observable implements Validateable, Identifiab
 	}
 	
 	public static <T> EventNode<T> build(String id, T value, Observer observer) {
+		
 		EventNode<T> n = new EventNode<T>(id, value);
 		n.addObserver(observer);
 		return n;
@@ -102,6 +108,7 @@ public class EventNode<T> extends Observable implements Validateable, Identifiab
 	
 	@Override
 	public int hashCode() {
+		
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
@@ -111,6 +118,7 @@ public class EventNode<T> extends Observable implements Validateable, Identifiab
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean equals(Object obj) {
+		
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -128,6 +136,7 @@ public class EventNode<T> extends Observable implements Validateable, Identifiab
 
 	@Override
 	public String toString() {
+		
 		return "NodeImpl [id=" + id + ", value=" + value + "]";
 	}
 }

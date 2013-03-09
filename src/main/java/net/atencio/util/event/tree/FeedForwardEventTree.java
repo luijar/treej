@@ -55,6 +55,7 @@ public interface FeedForwardEventTree<T> extends Collection<EventNode<T>> {
 	 * 
 	 * @param nodeId   The source node id
 	 * @param context  Used to pass any context object that could be useful within the observers
+	 * @param propagate Wheter to propagate event to entire tree under source node
 	 * @return The count of nodes that were notified
 	 * @throws NodeNotFoundException 
 	 */
@@ -83,9 +84,15 @@ public interface FeedForwardEventTree<T> extends Collection<EventNode<T>> {
 	Trace generateTracedEventOn(String nodeId, Object context) throws NodeNotFoundException;
 	
 	/**
-	 * @see Trace generateTracedEventOn(String nodeId, Object context) throws NodeNotFoundException;
+	 * 
+	 * @see generateTracedEventOn(String nodeId, Object context) throws NodeNotFoundException
 	 */
 	Trace generateTracedEventOn(EventNode<T> node, Object context)	throws NodeNotFoundException;
 	
-	
+	/**
+	 * 
+	 * @param propagate Wheter to propagate event to entire tree under source node 
+	 * @see generateTracedEventOn(String nodeId, Object context) throws NodeNotFoundException
+	 */
+	Trace generateTracedEventOn(String nodeId, Object context, boolean propagate)	throws NodeNotFoundException;
 }

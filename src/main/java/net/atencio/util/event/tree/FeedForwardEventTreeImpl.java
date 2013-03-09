@@ -232,19 +232,30 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 	public Trace generateTracedEventOn(EventNode<T> node, Object context)
 			throws NodeNotFoundException {
 		
-		// TODO
-		
-		return null;
+		return this.generateTracedEventOn(node.getId(), context);
 	}
 	
 	@Override
 	public Trace generateTracedEventOn(String nodeId, Object context)
 			throws NodeNotFoundException {
 		
+		return this.generateTracedEventOn(nodeId, context, false);	
+	}
+	
+	@Override
+	public Trace generateTracedEventOn(String nodeId, Object context, boolean propagate) throws NodeNotFoundException {
 		
-		// TODO
-		
-		return null;
+		Trace trace = new Trace();
+		EventNode<T> source = this.fetchNode(nodeId);		
+		if(propagate) {
+			// as nodes get notified, it will add them to the trace
+			notifyAllObservers(source, context, trace);
+		}
+		else {
+			source.notifyObservers(context);
+			trace.addPath(nodeId);
+		}
+		return trace;
 	}
 	
 	@Override
@@ -273,6 +284,18 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 		return notified;
 	}
 	
+	
+	private void notifyAllObservers(EventNode<T> n, final Object obj, Trace trace) {
+		
+		n.notifyObservers(obj);
+		trace.addPath(n.getId());
+		if(n.getDepth() == 0) {						
+			return;
+		}		
+		for(EventNode<T> next: n.getNextNodes()) {
+			notifyAllObservers(next, obj);
+		}
+	}
 	
 	private EventNode<T> fetchNode(String id) throws NodeNotFoundException {
 		

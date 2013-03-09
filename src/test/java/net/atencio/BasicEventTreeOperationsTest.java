@@ -12,6 +12,7 @@ import net.atencio.util.event.tree.FeedForwardEventTree;
 import net.atencio.util.event.tree.FeedForwardEventTreeImpl;
 import net.atencio.util.event.tree.NodeNotFoundException;
 import net.atencio.util.event.tree.RootNode;
+import net.atencio.util.event.tree.Trace;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -119,23 +120,51 @@ public class BasicEventTreeOperationsTest {
 		Assert.assertEquals(this.basicTree.size(), 3 + 1);
 	}
 	
+	@Test
+	public void testGenerateTracedEventOnNodeId() throws NodeNotFoundException {
+		
+		EventNode<Color> one = new EventNode<Color>("1", Color.BLACK);
+		EventNode<Color> two = new EventNode<Color>("2", Color.RED);
+		EventNode<Color> three = new EventNode<Color>("3", Color.CYAN);
+		
+		// Add three nodes
+		this.basicTree.add(one);
+		this.basicTree.add(two);
+		this.basicTree.add(three);
+		
+		// Add paths
+		this.basicTree.addPath("1", "root");		
+		this.basicTree.addPath("2", "1");		
+		this.basicTree.addPath("3", "2");
+		
+		// Add Observers to node 1
+		final ChangeableBoolean isNotified = new ChangeableBoolean(false);
+		
+		// Add an observer to the node
+		one.addObserver(new Observer() {
+			@Override
+			public void update(Observable o, Object arg) {
+				isNotified.set(true);
+			}
+		});
+		
+		// trigger the change on a node
+		one.markAsChanged();
+		
+		Trace trace = this.basicTree.generateTracedEventOn("root", Color.YELLOW, true);
+		Assert.assertEquals(notified, 4);
+		
+		Assert.assertTrue(isNotified.get());
+		
+	}
+	
 	private static class ChangeableBoolean implements Serializable {
 
 		private static final long serialVersionUID = 1L;
 		private boolean val;
 		
-		public ChangeableBoolean() { 		
-			this.val = false;
-		}
-		
 		public ChangeableBoolean(boolean initialVal) {
 			this.val = initialVal;
-		}
-		
-		public synchronized boolean checkAndSet(boolean newVal) {
-			boolean prev = val;
-			val = newVal;
-			return prev;
 		}
 		
 		public synchronized boolean get() {
