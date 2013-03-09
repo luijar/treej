@@ -16,6 +16,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Test class for simple on/off events
+ * 
+ * @author luijar
+ *
+ */
 public class OnOffEventTest {
 
 	private FeedForwardEventTree<Boolean> basicTree;
