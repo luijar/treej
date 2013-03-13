@@ -110,8 +110,12 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 
 	@Override
 	public boolean removeAll(Collection<?> c) {
-		// TODO Auto-generated method stub
-		return false;
+		
+		int oldSize = this.size();		
+		for(Object obj: c) {
+			this.remove(obj);
+		}		
+		return oldSize == this.size() - c.size();
 	}
 
 	@Override
@@ -249,7 +253,7 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 		EventNode<T> source = this.fetchNode(nodeId);		
 		if(propagate) {
 			// as nodes get notified, it will add them to the trace
-			notifyAllObservers(source, context, trace);
+			this.notifyAllObservers(source, context, trace);
 		}
 		else {
 			source.notifyObservers(context);
@@ -293,7 +297,7 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 			return;
 		}		
 		for(EventNode<T> next: n.getNextNodes()) {
-			notifyAllObservers(next, obj);
+			this.notifyAllObservers(next, obj, trace);
 		}
 	}
 	

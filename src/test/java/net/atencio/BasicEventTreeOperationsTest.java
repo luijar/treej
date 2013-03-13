@@ -71,6 +71,13 @@ public class BasicEventTreeOperationsTest {
 		
 		int notified = this.basicTree.generateEventOn("root", Color.YELLOW, true);
 		Assert.assertEquals(notified, 4);
+		
+		List<EventNode<Color>> toRemove = new ArrayList<EventNode<Color>>();
+		toRemove.add(one);
+		toRemove.add(two);
+		Assert.assertEquals(4, this.basicTree.size());
+		this.basicTree.removeAll(toRemove);
+		Assert.assertEquals(2, this.basicTree.size());
 	}
 	
 	@Test
@@ -152,10 +159,8 @@ public class BasicEventTreeOperationsTest {
 		one.markAsChanged();
 		
 		Trace trace = this.basicTree.generateTracedEventOn("root", Color.YELLOW, true);
-		Assert.assertEquals(notified, 4);
-		
-		Assert.assertTrue(isNotified.get());
-		
+		Assert.assertEquals(trace.getCount(), 4);		
+		Assert.assertTrue(isNotified.get());		
 	}
 	
 	private static class ChangeableBoolean implements Serializable {

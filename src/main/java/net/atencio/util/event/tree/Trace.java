@@ -36,7 +36,18 @@ public class Trace {
 	
 	@Override
 	public String toString() {
-		return "Trace [trace=" + trace + "]";
+		
+		StringBuilder traceBuilder = new StringBuilder();
+		traceBuilder.append("Trace [ ");
+		for(int i = 0; i < this.trace.size(); i++) {
+			traceBuilder.append(this.trace.get(i));
+			if(i != this.trace.size() - 1) {
+				traceBuilder.append("->");
+			}
+		}
+		traceBuilder.append(" ]");
+		
+		return traceBuilder.toString();
 	}
 	
 	
