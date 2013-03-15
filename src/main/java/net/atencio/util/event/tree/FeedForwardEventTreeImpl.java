@@ -296,7 +296,7 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 	
 	
 	/**
-	 * Helper class
+	 * Private inner class used to build new paths into the tree
 	 */
 	private class PathBuilderImpl implements PathBuilder {
 		
