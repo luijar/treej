@@ -54,22 +54,22 @@ public class BasicEventTreeOperationsTest {
 		Assert.assertFalse(this.basicTree.isEmpty());
 		Assert.assertEquals(this.basicTree.depth(), 1);
 				
-		this.basicTree.addPath("1", "root");
+		this.basicTree.newPath().from("root").to("1").add();
 		Assert.assertEquals(this.basicTree.depth(), 2);
 		
 		// This path should be omitted, depth remains the same
-		this.basicTree.addPath("1", "root");
+		this.basicTree.newPath().from("root").to("1").add();
 		Assert.assertEquals(this.basicTree.depth(), 2);
 		
-		this.basicTree.addPath("2", "1");
+		this.basicTree.newPath().from("1").to("2").add();
 		Assert.assertEquals(this.basicTree.depth(), 3);
 		
-		this.basicTree.addPath("3", "2");
+		this.basicTree.newPath().from("2").to("3").add();
 		Assert.assertEquals(this.basicTree.depth(), 4);
 		
 		Assert.assertEquals(this.basicTree.size(), 4);
 		
-		int notified = this.basicTree.generateEventOn("root", Color.YELLOW, true);
+		int notified = this.basicTree.generateEventOn("root", Color.YELLOW);
 		Assert.assertEquals(notified, 4);
 		
 		List<EventNode<Color>> toRemove = new ArrayList<EventNode<Color>>();
@@ -93,9 +93,9 @@ public class BasicEventTreeOperationsTest {
 		this.basicTree.add(three);
 		
 		// Add paths
-		this.basicTree.addPath("1", "root");		
-		this.basicTree.addPath("2", "1");		
-		this.basicTree.addPath("3", "2");
+		this.basicTree.newPath().from("root").to("1").add();		
+		this.basicTree.newPath().from("1").to("2").add();		
+		this.basicTree.newPath().from("2").to("3").add();
 		
 		// Add Observers to node 1
 		final ChangeableBoolean isNotified = new ChangeableBoolean(false);
@@ -107,7 +107,7 @@ public class BasicEventTreeOperationsTest {
 		});
 		one.markAsChanged();
 		
-		int notified = this.basicTree.generateEventOn("root", Color.YELLOW, true);
+		int notified = this.basicTree.generateEventOn("root", Color.YELLOW);
 		Assert.assertEquals(notified, 4);
 		
 		Assert.assertTrue(isNotified.get());
@@ -140,9 +140,9 @@ public class BasicEventTreeOperationsTest {
 		this.basicTree.add(three);
 		
 		// Add paths
-		this.basicTree.addPath("1", "root");		
-		this.basicTree.addPath("2", "1");		
-		this.basicTree.addPath("3", "2");
+		this.basicTree.newPath().from("root").to("1").add();		
+		this.basicTree.newPath().from("1").to("2").add();		
+		this.basicTree.newPath().from("2").to("3").add();
 		
 		// Add Observers to node 1
 		final ChangeableBoolean isNotified = new ChangeableBoolean(false);
@@ -158,10 +158,54 @@ public class BasicEventTreeOperationsTest {
 		// trigger the change on a node
 		one.markAsChanged();
 		
-		Trace trace = this.basicTree.generateTracedEventOn("root", Color.YELLOW, true);
+		Trace trace = this.basicTree.generateTracedEventOn("root", Color.YELLOW);
 		Assert.assertEquals(trace.getCount(), 4);		
 		Assert.assertTrue(isNotified.get());		
 	}
+	
+	@Test(expected=NodeNotFoundException.class)
+	public void testGenerateEventOnRemovedNode() throws NodeNotFoundException {
+		
+		EventNode<Color> one = new EventNode<Color>("1", Color.BLACK);
+		EventNode<Color> two = new EventNode<Color>("2", Color.RED);
+		EventNode<Color> three = new EventNode<Color>("3", Color.CYAN);
+		
+		// Add three nodes
+		this.basicTree.add(one);
+		this.basicTree.add(two);
+		this.basicTree.add(three);
+		
+		// Add paths
+		this.basicTree.newPath().from("root").to("1").add();		
+		this.basicTree.newPath().from("1").to("2").add();		
+		this.basicTree.newPath().from("2").to("3").add();
+		
+		this.basicTree.remove(one);
+		
+		// this will fire the event, since there is no node "one"
+		this.basicTree.generateTracedEventOn(one, Color.YELLOW);
+	}
+	
+//	@Test
+//	public void testWithManyDependencies() throws NodeNotFoundException {
+//		
+//		EventNode<Color> one = new EventNode<Color>("1", Color.BLACK);
+//		EventNode<Color> two = new EventNode<Color>("2", Color.RED);
+//		EventNode<Color> three = new EventNode<Color>("3", Color.CYAN);
+//		
+//		// Add three nodes
+//		this.basicTree.add(one);
+//		this.basicTree.add(two);
+//		this.basicTree.add(three);
+//		
+//		// Add paths
+//		this.basicTree.newPath().from("root").to("1").add();		
+//		this.basicTree.newPath().from("1").to("2").add();		
+//		this.basicTree.newPath().from("2").to("3").add();
+//		
+//		this.basicTree.remove(one);		
+//	}
+	
 	
 	private static class ChangeableBoolean implements Serializable {
 

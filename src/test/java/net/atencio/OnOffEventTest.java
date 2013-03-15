@@ -64,9 +64,9 @@ public class OnOffEventTest {
 		this.basicTree.add(three);
 		
 		// Add paths
-		this.basicTree.addPath("1", "root");		
-		this.basicTree.addPath("2", "1");		
-		this.basicTree.addPath("3", "1", "2");
+		this.basicTree.newPath().from("root").to("1").add();		
+		this.basicTree.newPath().from("1").to("2").add();		
+		this.basicTree.newPath().from("1", "2").to("3").add();
 		
 		// Turn all nodes on by turning root on and propagating
 		this.root.updateValue(Boolean.TRUE);

@@ -10,17 +10,19 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 
 	private EventNode<T> root;
 	private Map<String, EventNode<T>> nodeIdMap;
+	private PathBuilderImpl pathBuilder;
 	
 	private static final Logger LOGGER = Logger.getLogger(FeedForwardEventTreeImpl.class.getName());
 	
 	public FeedForwardEventTreeImpl(int initCapacity) {
 		
 		this.nodeIdMap = new HashMap<String, EventNode<T>>(initCapacity);
+		this.pathBuilder = new PathBuilderImpl();
 	}
 	
 	public FeedForwardEventTreeImpl() {
 		
-		this.nodeIdMap = new HashMap<String, EventNode<T>>();
+		this(16);
 	}
 	
 	@Override
@@ -57,7 +59,12 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 	}
 	
 	@Override
-	public void addPath(String targetNodeId, String... sourceNodeIds) throws NodeNotFoundException {
+	public PathBuilder newPath() throws NodeNotFoundException {
+		this.pathBuilder.reset();
+		return this.pathBuilder;
+	}
+	
+	private void createPath(String targetNodeId, String... sourceNodeIds) throws NodeNotFoundException {
 		
 		EventNode<T> node = (EventNode<T>)this.nodeIdMap.get(targetNodeId);
 		
@@ -172,6 +179,7 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 		return this.nodeIdMap.values().toArray();
 	}
 
+	@SuppressWarnings("hiding")
 	@Override
 	public <T> T[] toArray(T[] a) {
 		
@@ -212,24 +220,12 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 		return "FeedForwardEventTreeImpl [depth=" + this.depth() + ", elements=" + this.toArray() + "]";
 	}
 	
-	@Override
-	public int generateEventOn(String nodeId, Object context) throws NodeNotFoundException {
-		
-		return generateEventOn(nodeId, context, true);
-	};
 	
 	@Override
 	public int generateEventOn(EventNode<T> node, Object context)
 			throws NodeNotFoundException {
 	
 		return this.generateEventOn(node.getId(), context);
-	}
-	
-	@Override
-	public int generateEventOn(EventNode<T> node, Object context,
-			boolean propagate) throws NodeNotFoundException {
-		
-		return this.generateEventOn(node.getId(), context, propagate);
 	}
 	
 	@Override
@@ -240,39 +236,23 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 	}
 	
 	@Override
-	public Trace generateTracedEventOn(String nodeId, Object context)
-			throws NodeNotFoundException {
-		
-		return this.generateTracedEventOn(nodeId, context, false);	
-	}
-	
-	@Override
-	public Trace generateTracedEventOn(String nodeId, Object context, boolean propagate) throws NodeNotFoundException {
+	public Trace generateTracedEventOn(String nodeId, Object context) throws NodeNotFoundException {
 		
 		Trace trace = new Trace();
 		EventNode<T> source = this.fetchNode(nodeId);		
-		if(propagate) {
-			// as nodes get notified, it will add them to the trace
-			this.notifyAllObservers(source, context, trace);
-		}
-		else {
-			source.notifyObservers(context);
-			trace.addPath(nodeId);
-		}
+		
+		// as nodes get notified, it will add them to the trace
+		this.notifyAllObservers(source, context, trace);
+
 		return trace;
 	}
 	
 	@Override
-	public int generateEventOn(String nodeId, Object context, boolean propagate) throws NodeNotFoundException {
+	public int generateEventOn(String nodeId, Object context) throws NodeNotFoundException {
 		
 		EventNode<T> source = this.fetchNode(nodeId);		
-		if(propagate) {			
-			return notifyAllObservers(source, context);
-		}
-		else {
-			source.notifyObservers(context);
-			return 1;
-		}		
+		
+		return notifyAllObservers(source, context);	
 	};
 	
 	private int notifyAllObservers(EventNode<T> n, final Object obj) {
@@ -313,4 +293,36 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 	Map<String, EventNode<T>> getNodeIdMap() {
 		return nodeIdMap;
 	}	
+	
+	
+	/**
+	 * Helper class
+	 */
+	private class PathBuilderImpl implements PathBuilder {
+		
+		private String[] from;
+		private String to;
+		
+		@Override
+		public PathBuilder from(String... from) {
+			this.from = from;
+			return this;
+		}
+		
+		@Override
+		public PathBuilder to(String to) {
+			this.to = to;
+			return this;
+		}
+		
+		void reset() {
+			this.from = null;
+			this.to = null;
+		}
+		
+		@Override
+		public void add() throws NodeNotFoundException {
+			FeedForwardEventTreeImpl.this.createPath(to, from);
+		}
+	}
 }

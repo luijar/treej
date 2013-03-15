@@ -33,7 +33,7 @@ public interface FeedForwardEventTree<T> extends Collection<EventNode<T>> {
 	 * @param sourceNodeIds Source Node ids. Sources 
 	 * @param targetNodeId  Target node id
 	 */
-	void addPath(String targetNodeId, String... sourceNodeIds) throws NodeNotFoundException;	
+	PathBuilder newPath() throws NodeNotFoundException;	
 	
 	/**
 	 * Depth of tree from the root. Note: this is different from the size of the tree which counts 
@@ -42,14 +42,7 @@ public interface FeedForwardEventTree<T> extends Collection<EventNode<T>> {
 	 * @return
 	 */
 	int depth();
-	
-	/**
-	 * Generate an event on a specific node and propagate
-	 * 
-	 * @see int generateEventOn(String nodeId, T change, boolean propagate) throws NodeNotFoundException
-	 */
-	int generateEventOn(String nodeId, Object context) throws NodeNotFoundException;
-	
+		
 	/**
 	 * Generate an event on a specific node
 	 * 
@@ -59,18 +52,12 @@ public interface FeedForwardEventTree<T> extends Collection<EventNode<T>> {
 	 * @return The count of nodes that were notified
 	 * @throws NodeNotFoundException 
 	 */
-	int generateEventOn(String nodeId, Object context, boolean propagate) throws NodeNotFoundException;
+	int generateEventOn(String nodeId, Object context) throws NodeNotFoundException;
 	
 	/**
 	 * @see int generateEventOn(String nodeId, T change) throws NodeNotFoundException
 	 */
 	int generateEventOn(EventNode<T> node, Object context) throws NodeNotFoundException;
-	
-	
-	/**
-	 *  @see int generateEventOn(String nodeId, T change, boolean propagate) throws NodeNotFoundException
-	 */
-	int generateEventOn(EventNode<T> node, Object context, boolean propagate) throws NodeNotFoundException;
 	
 	
 	/**
@@ -88,11 +75,4 @@ public interface FeedForwardEventTree<T> extends Collection<EventNode<T>> {
 	 * @see generateTracedEventOn(String nodeId, Object context) throws NodeNotFoundException
 	 */
 	Trace generateTracedEventOn(EventNode<T> node, Object context)	throws NodeNotFoundException;
-	
-	/**
-	 * 
-	 * @param propagate Wheter to propagate event to entire tree under source node 
-	 * @see generateTracedEventOn(String nodeId, Object context) throws NodeNotFoundException
-	 */
-	Trace generateTracedEventOn(String nodeId, Object context, boolean propagate)	throws NodeNotFoundException;
 }
