@@ -1,23 +1,36 @@
 Treej
 =====
 
-Under Construction
-
+Feed-forward Event Tree Framework for Java.
 
 Overview
 ========
 
-Feed-forward Event Tree Framework for Java. 
+Event trees are often used to generate system events that are part of event tree sequences. When an event gets generated on a given node, the framework
+will propagate and notify all of the nodes attached to this source node recursively. EventNodes are tuples carry an ID and a value (payload) which can be a reference 
+to any given class that you with to contain. All EventNodes implement the "Observable" interface, which means you can register an observer into it. 
 
-An event tree is a representation of a logic model that identifies and quantifies the possible outcomes following an initiating event. 
-It provides an inductive approach to reliability assessment as they are constructed using forward logic.
- 
-Event trees are often used to quantify system events that are part of event tree sequences. The logical processes employed to evaluate event tree sequences and 
-quantify the consequences are the same as those used in fault tree analyses.
+Note: Since nodes are notified recursively, the depth of the tree will be limited by the size of your JVM's stack.
 
+  	
 This framework provides the following:
   
   1. Extensible event tree framework 
 
   2. Simple traceability of events (tree path)
   
+
+Example
+========
+
+In the following tree:
+
+                 ( "root" )
+                   /
+				 /
+		  ( "Node1" )
+  	         /   \
+  	       /	   \ 
+     ( "Node2" )  ( "Node3" )
+		  
+An event on the "root" node will cause the following trace: "root" -> "Node1" -> "Node2" & "Node3"
