@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import net.atencio.util.event.tree.EventNode;
 import net.atencio.util.event.tree.FeedForwardEventTree;
 import net.atencio.util.event.tree.FeedForwardEventTreeImpl;
-import net.atencio.util.event.tree.EventNode;
-import net.atencio.util.event.tree.NodeNotFoundException;
 import net.atencio.util.event.tree.RootNode;
+import net.atencio.util.event.tree.exception.NodeNotFoundException;
 
 import org.junit.After;
 import org.junit.Assert;

@@ -6,6 +6,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import net.atencio.util.event.tree.exception.DuplicateNodeException;
+import net.atencio.util.event.tree.exception.NodeNotFoundException;
+
 public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 
 	private EventNode<T> root;
@@ -151,7 +154,7 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 		}
 		
 		if(this.nodeIdMap.containsKey(e.getId())) {
-			LOGGER.warning("Replacing node with id [" + e.getId() + "]");
+			throw new DuplicateNodeException(e.getId());
 		}
 		
 		return this.nodeIdMap.put(e.getId(), e) == null;
@@ -162,7 +165,7 @@ public class FeedForwardEventTreeImpl<T> implements FeedForwardEventTree<T> {
 		
 		int currentSize = this.size();
 		for(EventNode<T> n: c) {
-			this.nodeIdMap.put(n.getId(), n);
+			this.add(n);
 		}		
 		return this.nodeIdMap.size() == (c.size() + currentSize);
 	}

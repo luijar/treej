@@ -1,4 +1,4 @@
-package net.atencio.util.event.tree;
+package net.atencio.util.event.tree.exception;
 
 public class NodeNotFoundException extends Exception {
 

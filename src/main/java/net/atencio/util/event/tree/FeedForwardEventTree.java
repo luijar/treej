@@ -2,6 +2,8 @@ package net.atencio.util.event.tree;
 
 import java.util.Collection;
 
+import net.atencio.util.event.tree.exception.NodeNotFoundException;
+
 /**
  * Feed-forward Main Event Tree interface. Forms a graph with directed edge From source nodes to target nodes.
  * Any happens that happen in source nodes get propagated (if so desired) to child nodes.  
